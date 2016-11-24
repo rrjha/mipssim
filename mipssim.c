@@ -114,18 +114,18 @@ void display_ds(FILE* fout)
         fprintf(fout, "\t%d", reg_file[i]);
     }
 
-    fprintf(fout, "\nData Segment:\n716:");
+    fprintf(fout, "\nData Segment:\n%u:", DATA_BASE_ADDR);
     for(i = data_offset; i < (data_offset + 10); i++)
         fprintf(fout, "\t%d", mips_mem[i]);
 
     fprintf(fout, "\n");
 }
 
-void get_opt(const char* args[], int num_args, int *mptr, int *nptr)
+void get_opt(char* args[], int num_args, unsigned int *mptr, unsigned int *nptr)
 {
     char *ptr;
 
-    *mptr = -1; *nptr = -1;
+    *mptr = 0; *nptr = (unsigned int) -1;
     if((num_args < 3) || (num_args > 4)) {
         /* Invalid number of arguments. Displaye usage */
         printf("Incorrect number of arguments.. exiting..\n");
@@ -136,13 +136,11 @@ void get_opt(const char* args[], int num_args, int *mptr, int *nptr)
         /* 4th Arguments may have start and end cycle */
         if('T' == getopt(num_args, args, "T:")) {
                 ptr = optarg;
-                *mptr = atoi(ptr);
+                *mptr = (unsigned int) atoi(ptr);
                 ptr = strchr(optarg, ':');
-                *nptr = atoi(ptr+1);
+                if(ptr)
+                    *nptr = (unsigned int) atoi(ptr+1);
         }
-    }
-    if((*mptr < 0) || (*nptr < 0)){
-        *mptr = 1; *nptr = 500;
     }
 }
 

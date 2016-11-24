@@ -21,17 +21,17 @@ clean: To clean mipssim binary and all intermidiate files generated use this tar
 Command Synopsis
 ----------------
 
-mipssim <Inputfilename> <Outputfilename> <operation> [Tm:n]
+mipssim <Inputfilename> <Outputfilename> [-Tm:n]
 
 Inputfilename - The file name of the binary input file.
 Outputfilename - The file name to which to print the output.
-Operation - Either"dis" or"sim" to specify disassembly or simulation.
 -Tm:n - Optional argument to specify the start (m) and end (n) cycles of simulation tracing output. 
+	-T0:0 prints only the final state (result after final cycle)
+	Omitting this switch prints all cycles (Max number of supported cycle is 0xFFFFFFFF)
 
-MIPSSIM is a disassembler and simulator for MIPS32. The software currently supports disassembly only (dis operation).
-Program needs exactly 3 parameters for "dis" operation and can have 3 or 4 param for "sim" (since it is currently not supported so no validation for sim or extra switch is done)
+MIPSSIM is a simulator for MIPS32. It simulates out of order dynamic scheduling with speculation and in-order commit.
 
-Current support includes disassembly of following instructions:
+Current support includes simulation for program containing these instructions:
 
 SW, LW
 J, BEQ, BNE, BGEZ, BGTZ, BLEZ, BLTZ
@@ -43,11 +43,11 @@ SUB, SUBU, ADD, ADDU
 AND, OR, XOR, NOR
 NOP
 
-The words following break and before data address start (716) is considered unsigned. The data starting from base address of data (716 or address following break if break appears on or after 716) is considered signed.
+The simulation uses a 1-bit branch predictor for prediction. Program termination is marked with commit of BREAK instruction.
+
 This program is compiled and verified on both little endian system (X86_64) and big endian system (SUN SPARC at CISE) and reorders the byte as needed.
 
 Assumptions:
 1) The input file contains multiples of 32 bit words i.e. file size in bytes is a multiple of 4 (program uses C library function to determine size of file). If this condition is not met program throws a message for the same and exits
-2) The data section starts at address 716 or later (if break comes later) and all bytes from start of data section is signed. However problem doesn't clearly state about words occuring between break and start of data adress, if break appears before 716. So I've assumed them to be unsigned. e.g. if break is at address 652 then address 656-712 are assumed unsigned and the data starting at 716 is understood to be signed. So in this case if value 0xFFFFFFFF occurs at address 672 it will be understood as unsigned max value (decimal 4294967295) whereas if it occured at address 720 it will be considered -1.
-3) Currently only disassembly is supported which needs exactly 3 parameters (inputfilename, outputfilename and "dis" operation). Upon giving "sim" operation only a message for no support will be given without validating further parameters like -T
-4) Program assumes that input binary file is memory dump in big endian byte order.
+2) The data section normally starts at address 716. Simulation makes this assumption to display data memory.
+3) Program assumes that input binary file is memory dump in big endian byte order.
