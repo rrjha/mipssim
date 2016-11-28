@@ -73,7 +73,7 @@ void issue_instruction()
             else {
                 /* NOP and BREAK do not enter RS and go to rob straight */
                 rob_slot = create_rob_entry(curr_instr->instr_str, curr_instr->internal_code, -1);
-                if (rob_slot > 0)
+                if (rob_slot >= 0)
                     rob.rb[rob_slot].state = EWB;
             }
         }
