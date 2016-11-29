@@ -13,12 +13,13 @@
 /* Abstract memory as words from 600 to 800 */
 int32 mips_mem[MEM_SIZE];
 int reg_file[GPR_MAX];
+unsigned int filesz=0;
 
 /* Read the given input file and load the instructions in simulated memory */
 void load_mips_mem (const char *input_mips_file)
 {
 	FILE *fin;
-	int filesz=0, testval = 1;
+	int testval = 1;
 	int wordsread = 0;
 
 	/* Init the mem first */

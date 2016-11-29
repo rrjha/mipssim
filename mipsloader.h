@@ -4,7 +4,7 @@
 
 #define CODE_BASE_ADDR 600
 #define DATA_BASE_ADDR 716
-#define MEM_END 800
+#define MEM_END 1000
 #define MEM_SIZE ((MEM_END - CODE_BASE_ADDR)/sizeof(int32))
 
 //#define INSTR_MEM_SIZE (DATA_BASE_ADDR - CODE_BASE_ADDR)/sizeof(uint32)
@@ -14,5 +14,6 @@ void load_mips_mem (const char*);
 
 extern int32 mips_mem[MEM_SIZE];
 extern int reg_file[GPR_MAX];
+extern unsigned int filesz;
 
 #endif

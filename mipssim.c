@@ -78,7 +78,12 @@ void init_internal_mapping()
 
 void display_ds(FILE* fout)
 {
-    int i=0, bcount=1, data_offset = (DATA_BASE_ADDR - CODE_BASE_ADDR)/sizeof(int);
+    int i=0, bcount=1;
+    int data_offset = (DATA_BASE_ADDR - CODE_BASE_ADDR)/sizeof(int);
+    int data_end_offset = filesz/sizeof(int);
+
+    if (data_end_offset < (data_offset + 10))
+        data_end_offset = (data_offset + 10);
 
     /* First print the clock cycle */
     fprintf(fout, "Cycle <%u>:\n", clk_cnt);
@@ -115,7 +120,7 @@ void display_ds(FILE* fout)
     }
 
     fprintf(fout, "\nData Segment:\n%u:", DATA_BASE_ADDR);
-    for(i = data_offset; i < (data_offset + 10); i++)
+    for(i = data_offset; i < data_end_offset; i++)
         fprintf(fout, "\t%d", mips_mem[i]);
 
     fprintf(fout, "\n");
